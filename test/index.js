@@ -414,43 +414,6 @@ describe('Memory', () => {
         done();
     });
 
-    it('cleans up timers when stopped', { parallel: false }, (done) => {
-
-        let cleared;
-        let set;
-
-        const oldClear = clearTimeout;
-        clearTimeout = function (id) {
-
-            cleared = id;
-            return oldClear(id);
-        };
-
-        const oldSet = setTimeout;
-        setTimeout = function (fn, time) {
-
-            set = oldSet(fn, time);
-            return set;
-        };
-
-        const client = new Catbox.Client(Memory);
-        client.start((err) => {
-
-            expect(err).to.not.exist();
-            const key = { id: 'x', segment: 'test' };
-            client.set(key, '123', 500, (err) => {
-
-                client.stop();
-                clearTimeout = oldClear;
-                setTimeout = oldSet;
-                expect(err).to.not.exist();
-                expect(cleared).to.exist();
-                expect(cleared).to.equal(set);
-                done();
-            });
-        });
-    });
-
     describe('start()', () => {
 
         it('creates an empty cache object', (done) => {
@@ -530,6 +493,36 @@ describe('Memory', () => {
                 });
             });
         });
+
+
+        it('removes an item from the cache object when it expires', (done) => {
+
+            const key = {
+                segment: 'test',
+                id: 'test'
+            };
+
+            const memory = new Memory();
+            expect(memory.cache).to.not.exist();
+
+            memory.start(() => {
+
+                expect(memory.cache).to.exist();
+                memory.set(key, 'myvalue', 10, () => {
+
+                    expect(memory.cache[key.segment][key.id].item).to.equal('"myvalue"');
+
+                    setTimeout(() => {
+
+                        memory.get(key, () => {
+
+                            expect(memory.cache[key.segment][key.id]).to.not.exist();
+                            done();
+                        });
+                    }, 15);
+                });
+            });
+        });
     });
 
     describe('set()', () => {
@@ -555,7 +548,12 @@ describe('Memory', () => {
             });
         });
 
-        it('removes an item from the cache object when it expires', (done) => {
+        it('returns null when item does not exist', (done) => {
+
+            const differentKeyInSameSegment = {
+                segment: 'test',
+                id: 'different'
+            };
 
             const key = {
                 segment: 'test',
@@ -564,18 +562,16 @@ describe('Memory', () => {
 
             const memory = new Memory();
             expect(memory.cache).to.not.exist();
-
             memory.start(() => {
 
                 expect(memory.cache).to.exist();
-                memory.set(key, 'myvalue', 10, () => {
+                memory.set(differentKeyInSameSegment, 'myvalue', 10, () => {
 
-                    expect(memory.cache[key.segment][key.id].item).to.equal('"myvalue"');
-                    setTimeout(() => {
+                    memory.get(key, (result) => {
 
-                        expect(memory.cache[key.segment][key.id]).to.not.exist();
+                        expect(result).to.equal(null);
                         done();
-                    }, 15);
+                    });
                 });
             });
         });
