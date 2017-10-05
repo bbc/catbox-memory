@@ -1,13 +1,14 @@
 {
-  "name": "catbox-memory",
-  "description": "Memory adapter for catbox",
+  "name": "serverless-catbox-memory",
+  "description": "Memory adapter for catbox without use of setTimeouts",
   "version": "2.0.4",
-  "repository": "git://github.com/hapijs/catbox-memory",
+  "repository": "git://github.com/bbc/serverless-catbox-memory",
   "main": "lib/index.js",
   "keywords": [
     "cache",
     "catbox",
-    "memory"
+    "memory",
+    "lambda"
   ],
   "engines": {
     "node": ">=4.0.0"
