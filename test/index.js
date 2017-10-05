@@ -632,6 +632,54 @@ describe('Memory', () => {
             });
         });
 
+        it('does not error on flush if there is no cache set', (done) => {
+
+            const memory = new Memory({ maxByteSize: 200 });
+            expect(memory.cache).to.not.exist();
+
+            memory.flushExpiredCacheItems();
+            done();
+        });
+
+        it('drops stale keys when byte limit is reached', (done) => {
+
+            const key1 = {
+                segment: 'test',
+                id: 'test'
+            };
+
+            const key2 = {
+                segment: 'test',
+                id: 'test2'
+            };
+
+            // maxByteSize is slightly larger than the first key so we are left with a small
+            // amount of free space, but not enough for the second key to be created.
+            const memory = new Memory({ maxByteSize: 200 });
+            expect(memory.cache).to.not.exist();
+
+            memory.start(() => {
+
+                expect(memory.cache).to.exist();
+                memory.set(key1, 'my', 10, (err) => {
+
+
+                    setTimeout(() => {
+
+                        expect(err).to.not.exist();
+                        expect(memory.cache[key1.segment][key1.id].item).to.equal('"my"');
+
+                        memory.set(key2, 'myvalue', 10, (err) => {
+
+                            expect(err).to.not.exist();
+                            expect(memory.cache[key1.segment][key1.id]).to.not.exist();
+                            done();
+                        });
+                    }, 11);
+                });
+            });
+        });
+
         it('increments the byte size when an object is inserted', (done) => {
 
             const key1 = {
