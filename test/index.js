@@ -653,29 +653,38 @@ describe('Memory', () => {
                 id: 'test2'
             };
 
+            const key3 = {
+                segment: 'test',
+                id: 'test3'
+            };
+
             // maxByteSize is slightly larger than the first key so we are left with a small
             // amount of free space, but not enough for the second key to be created.
-            const memory = new Memory({ maxByteSize: 200 });
+            const memory = new Memory({ maxByteSize: 320 });
             expect(memory.cache).to.not.exist();
 
             memory.start(() => {
 
                 expect(memory.cache).to.exist();
-                memory.set(key1, 'my', 10, (err) => {
+                memory.set(key1, 'm', 9, (err) => {
 
+                    expect(err).to.not.exist();
+                    memory.set(key2, 'y', 10, (err) => {
 
-                    setTimeout(() => {
-
-                        expect(err).to.not.exist();
-                        expect(memory.cache[key1.segment][key1.id].item).to.equal('"my"');
-
-                        memory.set(key2, 'myvalue', 10, (err) => {
+                        setTimeout(() => {
 
                             expect(err).to.not.exist();
-                            expect(memory.cache[key1.segment][key1.id]).to.not.exist();
-                            done();
-                        });
-                    }, 11);
+                            expect(memory.cache[key1.segment][key1.id].item).to.equal('"m"');
+                            expect(memory.cache[key2.segment][key2.id].item).to.equal('"y"');
+                            memory.set(key3, 'myvalue', 10, (err) => {
+
+                                expect(err).to.not.exist();
+                                expect(memory.cache[key1.segment][key1.id]).to.not.exist();
+                                expect(memory.cache[key2.segment][key2.id]).to.not.exist();
+                                done();
+                            });
+                        }, 11);
+                    });
                 });
             });
         });
