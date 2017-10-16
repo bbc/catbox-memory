@@ -1,0 +1,9 @@
+{
+    "plugins": [],
+    "extends": [
+      "./node_modules/cd-eslint-rules/.eslintrc"
+    ],
+    "rules": {
+        "max-statements": 0
+    }
+  }
