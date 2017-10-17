@@ -1,7 +1,7 @@
 {
   "name": "serverless-catbox-memory",
   "description": "Memory adapter for catbox without use of setTimeouts",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "repository": "git://github.com/bbc/serverless-catbox-memory",
   "main": "lib/index.js",
   "keywords": [
