@@ -15,8 +15,7 @@ $(PYTHON) $(PIP):
 #################
 
 NODE_VERSION=$(shell cat .nvmrc | tr -d '[[:space:]]')
-COMPONENT=$(shell node -p -e "require('./package.json').name.replace(/@/,'').replace(/\//,'-')")
-COMPONENT_VERSION=$(shell node -p -e "require('./package.json').version")
+COMPONENT=serverless-catbox-memory
 DOCKER_IMAGE_NAME="$(COMPONENT)-test"
 ETC_PKI_PATH=$(shell if [ "$${OSTYPE//[0-9.]/}"  == "darwin" ]; then echo "/private";fi)/etc/pki
 
