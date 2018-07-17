@@ -1,5 +1,6 @@
-catbox-memory
-=============
+# @bbc/serverless-catbox-memory
+
+# This package is now hosted on the NPM Registry.
 
 Memory adapter for [catbox](https://github.com/hapijs/catbox).
 This adapter is not designed to share a common cache between multiple processes (e.g. in a cluster mode).
