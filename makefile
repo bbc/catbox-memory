@@ -20,7 +20,7 @@ DOCKER_IMAGE_NAME="$(COMPONENT)-test"
 ETC_PKI_PATH=$(shell if [ "$${OSTYPE//[0-9.]/}"  == "darwin" ]; then echo "/private";fi)/etc/pki
 
 clean:
-	rm -rf node_modules 
+	rm -rf node_modules
 
 test:
 	npm set registry https://npm.toolshed.tools.bbc.co.uk \
