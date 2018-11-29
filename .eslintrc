@@ -1,9 +1,14 @@
 {
-    "plugins": [],
-    "extends": [
-      
-    ],
-    "rules": {
-        "max-statements": 0
-    }
+  "plugins": [],
+  "extends": [],
+  "rules": {
+    "max-statements": 0
+  },
+  "parserOptions": {
+    "ecmaVersion": 2017
+  },
+
+  "env": {
+    "es6": true
   }
+}
